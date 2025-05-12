@@ -132,11 +132,7 @@ Content-Type: application/json
   "subject": "Sujet de l'email",
   "type": "welcome",
   "lang": "fr",
-  "workspaceId": "uuid-du-workspace",
-  "data": {
-    "username": "John Doe",
-    "activationLink": "https://example.com/activate"
-  }
+  "workspaceId": "uuid-du-workspace"
 }
 ```
 

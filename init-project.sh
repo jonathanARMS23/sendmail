@@ -21,15 +21,6 @@ echo "🧹 Nettoyage de l'environnement Docker..."
 docker-compose down -v
 docker system prune -f --volumes
 
-# Créer le dossier generated localement
-# echo "📁 Création du dossier generated..."
-# mkdir -p src/generated/prisma
-
-# Générer le client Prisma localement
-# echo "🔧 Génération du client Prisma..."
-# npx prisma generate
-# check_error "La génération du client Prisma a échoué"
-
 # Construire et démarrer les conteneurs Docker
 echo "🏗️ Construction et démarrage des conteneurs Docker..."
 docker-compose build --no-cache api
@@ -44,11 +35,11 @@ echo "⏳ Attente du démarrage complet de PostgreSQL..."
 sleep 15
 
 # Vérifier que le conteneur api est en cours d'exécution
-if ! docker-compose ps | grep -q "api.*running"; then
-    echo "❌ Le conteneur api n'est pas en cours d'exécution"
-    docker-compose logs api
-    exit 1
-fi
+# if ! docker-compose ps | grep -q "api.*running"; then
+#    echo "❌ Le conteneur api n'est pas en cours d'exécution"
+#    docker-compose logs api
+#    exit 1
+# fi
 
 # Installation des dépendances dans le conteneur
 echo "📦 Installation des dépendances..."
@@ -56,15 +47,19 @@ docker-compose exec -T api npm install
 check_error "L'installation des dépendances a échoué"
 
 # Exécuter les migrations Prisma
-echo "🔄 Exécution des migrations Prisma..."
+echo "🔄 Exécution des migrations Prisma... (DEV)"
 docker-compose exec -T api npx prisma migrate dev --name init
-check_error "Les migrations Prisma ont échoué"
+check_error "Les migrations Prisma (dev) ont échoué"
+
+echo "🔄 Exécution des migrations Prisma... (DEPLOY)"
+docker-compose exec -T api npm run prisma:migrate:deploy
+check_error "Les migrations Prisma (deploy) ont échoué"
 
 # Exécuter le seed pour initialiser la base de données
 echo "🌱 Initialisation des données avec le seed..."
-docker-compose exec -T api npx ts-node prisma/seed.ts
+docker-compose exec -T api npm run prisma:seed
 check_error "L'initialisation des données a échoué"
 
 echo "✨ Initialisation du projet terminée!"
-echo "🌐 L'API est accessible à l'adresse: http://localhost:3000"
+echo "🌐 L'API est accessible à l'adresse: http://localhost:1337"
 echo "🔍 Interface Prisma Studio accessible via: docker-compose exec api npm run prisma:studio"
