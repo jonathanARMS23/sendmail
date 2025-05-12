@@ -47,8 +47,8 @@ La base de données est composée de trois tables principales :
 ### 1. Cloner le dépôt
 
 ```bash
-git clone <url-du-repo>
-cd api-email-sender
+git clone https://github.com/jonathanARMS23/sendmail.git
+cd sendmail
 ```
 
 ### 2. Configurer l'environnement
@@ -64,7 +64,7 @@ Par défaut, la configuration suivante sera utilisée :
 ```
 # Application
 NODE_ENV=development
-PORT=3000
+PORT=1337
 
 # Database - URL de connexion pour Prisma
 DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?schema=public
@@ -140,6 +140,58 @@ Content-Type: application/json
 }
 ```
 
+### Exemples de requêtes
+
+Voici quelques exemples de requêtes pour différents types d'emails :
+
+#### Email de bienvenue (Welcome)
+
+```json
+{
+  "to": "jean.dupont@example.com",
+  "from": "noreply@yourcompany.com",
+  "subject": "Bienvenue sur notre service !",
+  "type": "welcome",
+  "lang": "fr",
+  "workspaceId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+#### Email OTP (One-Time Password)
+
+```json
+{
+  "to": "marie.martin@example.com",
+  "from": "securite@yourcompany.com",
+  "subject": "Votre code de vérification",
+  "type": "otp",
+  "lang": "fr"
+}
+```
+
+#### Email de réinitialisation de mot de passe
+
+```json
+{
+  "to": "pierre.durand@example.com",
+  "from": "securite@yourcompany.com",
+  "subject": "Réinitialisation de votre mot de passe",
+  "type": "reset_password",
+  "lang": "fr",
+  "workspaceId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8"
+}
+```
+
+### Types d'emails supportés
+
+L'API supporte actuellement les types d'emails suivants :
+
+- `welcome` : Email de bienvenue
+- `otp` : Email de code de vérification
+- `reset_password` : Email de réinitialisation de mot de passe
+
+Chaque type d'email peut être envoyé en différentes langues (fr, en) et peut être associé à un workspace spécifique.
+
 ## Développement
 
 ### Commandes utiles
@@ -178,12 +230,6 @@ Pour exécuter les tests unitaires :
 docker-compose exec api npm run test
 ```
 
-Pour exécuter les tests e2e :
-
-```bash
-docker-compose exec api npm run test:e2e
-```
-
 ## Architecture technique
 
 ### Docker
@@ -209,13 +255,6 @@ BullMQ est utilisé pour :
 - Créer une file d'attente pour les emails
 - Gérer les tentatives de réessai en cas d'échec
 - Traiter les emails en arrière-plan
-
-## Contribuer
-
-1. Créez une branche pour votre fonctionnalité (`git checkout -b feature/amazing-feature`)
-2. Committez vos changements (`git commit -m 'feat: add some amazing feature'`)
-3. Poussez votre branche (`git push origin feature/amazing-feature`)
-4. Ouvrez une Pull Request
 
 ## Licence
 
