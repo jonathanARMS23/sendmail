@@ -1,0 +1,34 @@
+# Répertoires
+node_modules
+dist
+build
+coverage
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# Fichiers d'environnement (ne pas inclure dans l'image Docker)
+.env
+.env.*
+!.env.example
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Versioning
+.git
+.gitignore
+
+# Autres
+README.md
+LICENSE

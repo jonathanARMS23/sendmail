@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modèle pour les workspaces
+model Workspace {
+  id                   String                 @id @default(uuid())
+  name                 String
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  emailTemplateMappings EmailTemplateMapping[]
+
+  @@map("workspaces")
+}
+
+// Modèle pour les templates d'email
+model Template {
+  id                   String                 @id @default(uuid())
+  name                 String
+  htmlContent          String
+  version              String
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  emailTemplateMappings EmailTemplateMapping[]
+
+  @@map("templates")
+}
+
+// Modèle pour le mapping des templates d'email
+model EmailTemplateMapping {
+  id                   String                 @id @default(uuid())
+  type                 String                 // ex: 'otp', 'welcome'
+  lang                 String                 // ex: 'en', 'fr', 'pt', 'es'
+  isDefault            Boolean                @default(false)
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  
+  // Relations
+  workspaceId          String?
+  workspace            Workspace?             @relation(fields: [workspaceId], references: [id])
+  
+  templateId           String
+  template             Template               @relation(fields: [templateId], references: [id])
+
+  @@unique([type, lang, workspaceId])
+  @@index([type, lang, isDefault])
+  @@map("email_template_mappings")
+}
