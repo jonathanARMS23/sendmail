@@ -123,9 +123,10 @@ Une fois le projet démarré, l'API est accessible à l'adresse : `http://localh
 ### Envoyer un email
 
 ```http
-POST /send-email
+POST {{baseURL}}/api/email/send
 Content-Type: application/json
 
+body:
 {
   "to": "destinataire@example.com",
   "from": "expediteur@example.com",
